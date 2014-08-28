@@ -1,0 +1,50 @@
+- @title = @poll.title
+%link{rel: 'stylesheet', href: "//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"}
+%script{src: "//code.jquery.com/ui/1.11.1/jquery-ui.js"}
+:css
+  .outer-options{
+    border:0px;
+    margin:0px;
+    padding:0px;
+    width:50%;
+    float:left;
+  }
+  #avail-options,#voted-options{
+    margin:3px;
+    border:1px solid black;
+    padding:2px;
+    border-radius:2px; 
+    padding-bottom:28px;
+    //display:inline-block;
+    //min-height:40px;
+  }
+  .option{
+    display:block;
+    border:1px black solid;
+    border-radius:5px;
+    margin:3px;
+  }
+%h1= @poll.title
+%pre= @poll.description
+.way-out
+  .outer-options#leftone
+    %ul#avail-options
+      - @options.each do |option|
+        %li.option= option.optext
+  .outer-options
+    %ul#voted-options
+%hr
+.new-option
+  = form_for :option do |f|
+    = f.hidden_field :poll_id, value: @poll.id
+    %p
+      = f.label :optext
+      = f.text_field :optext
+    = f.submit
+:javascript
+    $('#avail-options').sortable({
+      connectWith:"#voted-options"
+    });
+    $('#voted-options').sortable({
+      connectWith:"#avail-options"
+    });
