@@ -6,17 +6,12 @@
     border:0px;
     margin:0px;
     padding:0px;
-    width:50%;
-    float:left;
   }
   #avail-options,#voted-options{
     margin:3px;
     border:1px solid black;
     padding:2px;
     border-radius:2px; 
-    padding-bottom:28px;
-    //display:inline-block;
-    //min-height:40px;
   }
   .option{
     display:block;
@@ -24,15 +19,25 @@
     border-radius:5px;
     margin:3px;
   }
+  #options-table{
+    width:100%;
+  }
 %h1= @poll.title
 %pre= @poll.description
-.way-out
-  .outer-options#leftone
-    %ul#avail-options
-      - @options.each do |option|
-        %li.option= option.optext
-  .outer-options
-    %ul#voted-options
+%table#options-table
+  %tbody
+    %tr
+      %td Move over one or more options to vote for
+      %td Then sort them in your order of preference
+    %tr
+      %td
+        %ul#avail-options.options
+          - @options.each do |option|
+            %li.option= option.optext
+      %td
+        %ul#voted-options.options
+%button#votebutton(onclick="submitVote()")
+  Vote
 %hr
 .new-option
   = form_for :option do |f|
@@ -41,10 +46,18 @@
       = f.label :optext
       = f.text_field :optext
     = f.submit
-:javascript
-    $('#avail-options').sortable({
-      connectWith:"#voted-options"
-    });
-    $('#voted-options').sortable({
-      connectWith:"#avail-options"
-    });
+:javascript  
+  a = $("#avail-options");
+  b = $("#voted-options");
+
+  h = a.height();
+  b.height(h);
+  a.height(h); //dynamic height -> static height
+
+  $('#avail-options').sortable({
+    connectWith:"#voted-options"
+  });
+  $('#voted-options').sortable({
+    connectWith:"#avail-options"
+  });
+    
