@@ -20,4 +20,9 @@ class PollsController < ApplicationController
     @option.save
     redirect_to Poll.find(@option.poll_id)
   end
+
+  def vote
+    @poll = Poll.find(params[:id])
+    @params = params
+  end
 end

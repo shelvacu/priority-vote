@@ -22,6 +22,9 @@
   #options-table{
     width:100%;
   }
+  #hidden-form{
+    display:none;
+  }
 %h1= @poll.title
 %pre= @poll.description
 %table#options-table
@@ -33,7 +36,7 @@
       %td
         %ul#avail-options.options
           - @options.each do |option|
-            %li.option= option.optext
+            %li.option{id: option.id}= option.optext
       %td
         %ul#voted-options.options
 %button#votebutton(onclick="submitVote()")
@@ -46,7 +49,20 @@
       = f.label :optext
       = f.text_field :optext
     = f.submit
+#hidden-form
+  / in case you're curious, this is used by the javascript code below to submit the vote
+  = form_for(@poll, as: :vote, url: {controller: 'polls', action: 'vote'}) do |f|
+    = f.hidden_field :poll_id, value: @poll.id
+    #vote-fields
 :javascript  
+  function submitVote(){
+    var sortedIDs = $("#voted-options").sortable("toArray");
+    var voteFields = $("#vote-fields")
+    sortedIDs.forEach(function(vote,i){
+      voteFields.append($('<input type="text" name="vote'+i+'" value="'+vote+'">'))
+    });
+    $("#hidden-form").children()[0].submit();
+  }
   a = $("#avail-options");
   b = $("#voted-options");
 
